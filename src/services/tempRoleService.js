@@ -36,7 +36,7 @@ export async function scheduleTempRole(guildId, userId, roleId, durationMs) {
     await saveTimers(filtered);
 }
 
-// Проверка и очистка истекших ролей (вызывается при старте бота и по интервалу)
+// Проверка и очистка истекших ролей
 export async function checkTempRoles(client) {
     const timers = await loadTimers();
     if (timers.length === 0) return;
@@ -70,4 +70,20 @@ export async function checkTempRoles(client) {
     if (remainingTimers.length !== timers.length) {
         await saveTimers(remainingTimers);
     }
+}
+
+// Автоматический запуск проверки в фоновом режиме (каждую минуту)
+let isIntervalStarted = false;
+
+export function initTempRoleChecker(client) {
+    if (isIntervalStarted) return;
+    isIntervalStarted = true;
+
+    // Проверяем сразу при инициализации
+    checkTempRoles(client);
+
+    // Запускаем интервал проверки каждую минуту (60000 мс)
+    setInterval(() => {
+        checkTempRoles(client);
+    }, 60 * 1000);
 }
