@@ -5,7 +5,8 @@ import { handleInteractionError, createError, ErrorTypes } from '../../utils/err
 import { getColor } from '../../config/bot.js';
 import { logEvent, EVENT_TYPES } from '../../services/loggingService.js';
 import { getReactionRoleMessage } from '../../services/reactionRoleService.js';
-import { checkTempRoles } from './services/tempRoleService.js';
+import { scheduleTempRole } from '../../services/tempRoleService.js'; // Исправленный путь к сервису таймеров
+
 export async function handleReactionRolesSelectMenu(interaction, client) {
     try {
         const deferSuccess = await InteractionHelper.safeDefer(interaction, { flags: MessageFlags.Ephemeral });
@@ -109,6 +110,12 @@ export async function handleReactionRolesSelectMenu(interaction, client) {
                     await member.roles.add(role);
                     addedRoles.push(role.name);
                     logger.debug(`Added role ${role.name} to ${member.user.tag}`);
+
+                    // УСТАНАВЛИВАЕМ ВРЕМЕННЫЙ ТАЙМЕР НА РОЛЬ (например, на 1 час)
+                    // Можете изменить время: 1 час = 60 * 60 * 1000
+                    const duration = 60 * 60 * 1000; 
+                    await scheduleTempRole(interaction.guildId, member.id, roleId, duration);
+
                 } catch (roleError) {
                     logger.error(`Failed to add role ${role.name} to ${member.user.tag}:`, roleError);
                     skippedRoles.push(role.name);
