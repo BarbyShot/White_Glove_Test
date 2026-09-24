@@ -111,10 +111,9 @@ export async function handleReactionRolesSelectMenu(interaction, client) {
                     addedRoles.push(role.name);
                     logger.debug(`Added role ${role.name} to ${member.user.tag}`);
 
-                    // УСТАНАВЛИВАЕМ ВРЕМЕННЫЙ ТАЙМЕР НА РОЛЬ (например, на 1 час или 30 минут )
-                    // Можете изменить время: 1 час = 60 * 60 * 1000
-                    // Можете изменить время: 30 минут = 30 * 60 * 1000
-                    // В одной секунде 1000 миллисекунд
+                    // УСТАНАВЛИВАЕМ ВРЕМЕННЫЙ ТАЙМЕР НА РОЛЬ (например, на 30 минут )
+                    // Можете изменить время на любое формула показана справа : 30 минут = 30 * 60 * 1000
+                    // Где 1 секунда 1000 миллисекунд 30 минут = 30 - минут * 60 - секунд * 1000 миллисекунд
                     const duration = 30 * 60 * 1000; 
                     await scheduleTempRole(interaction.guildId, member.id, roleId, duration);
 
